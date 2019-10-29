@@ -1,0 +1,39 @@
+---
+title: "class 10/29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(googlesheets4)
+library(infer)
+library(tidyverse)
+```
+
+
+```{r}
+sheets_deauth()
+x <- read_sheet("1cgP-e6THVfiW5TJ95QhX3jkNxKvc8Sicp9k_BkSRd2I") %>%
+  mutate(prop_red = red / (red + white)) %>%
+  drop_na()
+
+
+```
+
+```{r}
+x %>% 
+  specify(response = prop_red) %>%
+  ggplot(aes(prop_red)) +
+  geom_bar()
+
+```
+
+```{r}
+
+urn <- tibble(bead = c(rep("Red", 2000), rep("White", 8000))) 
+
+urn %>% rep_sample_n(size=25, replace=TRUE, reps=1000) %>%
+  group_by(replicate) %>% count(bead) %>% spread(bead, n) %>% summarize(prop_red = Red / (Red+White))
+
+
+```
